@@ -1,0 +1,98 @@
+class ArticleController{
+    fun add() {
+        if(loginedMember == null){
+            println("로그인 후 이용해주세요")
+            return
+        }
+        val memberId = loginedMember!!.id
+        print("제목 입력 : ")
+        val title = readLineTrim()
+        print("내용 입력 : ")
+        val body = readLineTrim()
+        val id = articleRepository.addArticle(memberId, title, body)
+        println("$id 번 게시물 등록완료")
+    }
+
+    fun list(rq: Rq) {
+        val keyword = rq.getStringParam("keyword", "")
+        val page = rq.getIntParam("page", 1)
+        val filteredArticles = articleRepository.articlesFilter(keyword, page, 5)
+
+        for(article in filteredArticles){
+            val member = memberRepository.getMemberById(article.memberId)
+            val nickName = member!!.nickName
+            println("${article.id} / ${article.title} / ${article.regDate} / 작성자 : ${nickName}")
+        }
+    }
+
+    fun detail(rq: Rq) {
+        val id = rq.getIntParam("id",0)
+        if(id == 0){
+            println("게시물 번호를 입력해주세요.")
+            return
+        }
+        val article = articleRepository.getArticleById(id)
+        if(article == null){
+            println("없는 게시물 번호입니다.")
+            return
+        }
+        println("번호 : ${article.id}")
+        println("제목 : ${article.title}")
+        println("내용 : ${article.body}")
+        println("등록일 : ${article.regDate}")
+        println("수정일 : ${article.updateDate}")
+    }
+
+    fun delete(rq: Rq) {
+        if(loginedMember == null){
+            println("로그인 후 이용해주세요")
+            return
+        }
+        val id = rq.getIntParam("id",0)
+        if(id == 0){
+            println("게시물 번호를 입력해주세요.")
+            return
+        }
+        val article = articleRepository.getArticleById(id)
+        if(article == null){
+            println("없는 게시물 번호입니다.")
+            return
+        }
+        if(loginedMember!!.id != article.memberId){
+            println("권한이 없습니다.")
+            return
+        }
+        articleRepository.articles.remove(article)
+        println("$id 번 게시물 삭제완료")
+    }
+
+    fun modify(rq : Rq){
+        if(loginedMember == null){
+            println("로그인 후 이용해주세요")
+            return
+        }
+        val id = rq.getIntParam("id",0)
+        if(id == 0){
+            println("게시물 번호를 입력해주세요.")
+            return
+        }
+        val article = articleRepository.getArticleById(id)
+        if(article == null){
+            println("없는 게시물 번호입니다.")
+            return
+        }
+        if(loginedMember!!.id != article.memberId){
+            println("권한이 없습니다.")
+            return
+        }
+        print("새 제목 : ")
+        val title = readLineTrim()
+        print("새 내용 : ")
+        val body = readLineTrim()
+        val updateDate = Util.getDateNowStr()
+        article.title = title
+        article.body = body
+        article.updateDate = updateDate
+        println("$id 번 게시물 수정 완료")
+    }
+}
