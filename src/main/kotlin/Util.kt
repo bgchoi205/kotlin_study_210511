@@ -1,17 +1,8 @@
+import java.io.File
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
 fun readLineTrim() = readLine()!!.trim()
-
-fun testArticleFromJson(jsonStr: String): TestArticle {
-    val jsonMap = mapFromJson(jsonStr)
-
-    val id = jsonMap["id"].toString().toInt()
-    val title = jsonMap["title"].toString()
-    val body = jsonMap["body"].toString()
-
-    return TestArticle(id, title, body)
-}
 
 fun mapFromJson(jsonStr: String): Map<String, Any> {
     val map = mutableMapOf<String, Any>()
@@ -48,6 +39,30 @@ fun mapFromJson(jsonStr: String): Map<String, Any> {
     }
 
     return map.toMap()
+}
+
+fun writeStrFile(filePath : String, fileContent : String){
+    File(filePath).parentFile.mkdirs()
+    File(filePath).writeText(fileContent)
+}
+
+fun writeIntFile(filePath : String, fileContent : Int){
+    writeStrFile(filePath, fileContent.toString())
+}
+
+fun readStrFromFile(filePath : String) : String{
+    if(!File(filePath).isFile){
+        return ""
+    }
+    return File(filePath).readText(Charsets.UTF_8)
+}
+
+fun readIntFromFile(filePath : String, default : Int) : Int{
+    val fileContent = readStrFromFile(filePath)
+    if(fileContent == ""){
+        return default
+    }
+    return fileContent.toInt()
 }
 
 

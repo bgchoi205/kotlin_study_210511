@@ -1,3 +1,5 @@
+import java.io.File
+
 class ArticleController{
     fun add() {
         if(loginedMember == null){
@@ -5,11 +7,25 @@ class ArticleController{
             return
         }
         val memberId = loginedMember!!.id
+        var boardList = ""
+        for(board in boardRepository.boards){
+            if(boardList.isNotEmpty()){
+                boardList += ", "
+            }
+            boardList += "${board.id} : ${board.name}"
+        }
+        print("게시판 선택(번호) : ")
+        val boardId = readLineTrim().toInt()
+        val board = boardRepository.getBoardById(boardId)
+        if(board == null){
+            println("없는 게시판 번호입니다.")
+            return
+        }
         print("제목 입력 : ")
         val title = readLineTrim()
         print("내용 입력 : ")
         val body = readLineTrim()
-        val id = articleRepository.addArticle(memberId, title, body)
+        val id = articleRepository.addArticle(memberId, boardId, title, body)
         println("$id 번 게시물 등록완료")
     }
 
@@ -21,7 +37,10 @@ class ArticleController{
         for(article in filteredArticles){
             val member = memberRepository.getMemberById(article.memberId)
             val nickName = member!!.nickName
-            println("${article.id} / ${article.title} / ${article.regDate} / 작성자 : ${nickName}")
+
+            val board = boardRepository.getBoardById(article.boardId)
+            val boardName = board!!.name
+            println("${article.id} / ${boardName} / ${article.title} / ${article.regDate} / 작성자 : ${nickName}")
         }
     }
 
@@ -62,7 +81,7 @@ class ArticleController{
             println("권한이 없습니다.")
             return
         }
-        articleRepository.articles.remove(article)
+        File("data/article/$id.json").delete()
         println("$id 번 게시물 삭제완료")
     }
 

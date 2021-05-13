@@ -32,6 +32,16 @@ data class TestArticle(
     }
 }
 
+fun testArticleFromJson(jsonStr: String): TestArticle {
+    val jsonMap = mapFromJson(jsonStr)
+
+    val id = jsonMap["id"].toString().toInt()
+    val title = jsonMap["title"].toString()
+    val body = jsonMap["body"].toString()
+
+    return TestArticle(id, title, body)
+}
+
 
 fun textReadFile2() {
     textWriteFile3()
