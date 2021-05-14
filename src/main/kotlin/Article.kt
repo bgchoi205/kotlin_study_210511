@@ -25,7 +25,7 @@ data class Article(
         jsonStr += "\r\n"
         jsonStr += "\t" + """ "regDate":"$regDate" """.trim() + ","
         jsonStr += "\r\n"
-        jsonStr += "\t" + """ "updateDate":"$updateDate" """.trim() + ","
+        jsonStr += "\t" + """ "updateDate":"$updateDate" """.trim()
         jsonStr += "\r\n"
         jsonStr += "}"
 

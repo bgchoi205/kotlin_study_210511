@@ -63,14 +63,14 @@ class ArticleRepository{
     }
 
     fun articlesFilter(keyword: String, page: Int, pageCount: Int): List<Article> {
-        val filtered1Articles = articlesFilterByKey(keyword)
+        val filtered1Articles = articlesFilterByKey(getArticles(), keyword)
         val filtered3Articles = articlesFilterByPage(filtered1Articles, page, pageCount)
         return filtered3Articles
     }
 
     private fun articlesFilterByPage(filtered1Articles: List<Article>, page: Int, pageCount: Int): List<Article> {
         val startIndex = filtered1Articles.lastIndex - ((page - 1) * pageCount)
-        var endIndex = startIndex - pageCount + 1
+        var endIndex = startIndex - (pageCount - 1)
         if(endIndex < 0){
             endIndex = 0
         }
@@ -81,8 +81,8 @@ class ArticleRepository{
         return filtered3Articles
     }
 
-    private fun articlesFilterByKey(keyword: String): List<Article> {
-        val articles = getArticles()
+    private fun articlesFilterByKey(articles : List<Article>, keyword: String): List<Article> {
+
         if(keyword.isEmpty()){
             return articles
         }
