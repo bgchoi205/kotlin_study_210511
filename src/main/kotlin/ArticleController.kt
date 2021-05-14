@@ -7,8 +7,9 @@ class ArticleController{
             return
         }
         val memberId = loginedMember!!.id
+        val boards = boardRepository.getBoards()
         var boardList = ""
-        for(board in boardRepository.boards){
+        for(board in boards){
             if(boardList.isNotEmpty()){
                 boardList += ", "
             }

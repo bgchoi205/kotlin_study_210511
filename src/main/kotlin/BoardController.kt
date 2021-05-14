@@ -1,3 +1,5 @@
+import java.io.File
+
 class BoardController {
     fun add() {
         print("게시판 이름 입력 : ")
@@ -9,7 +11,8 @@ class BoardController {
         }
         print("게시판 코드 입력 : ")
         val code = readLineTrim()
-        if (board != null) {
+        val boardCode = boardRepository.getBoardByCode(code)
+        if (boardCode != null) {
             println("사용중인 코드입니다.")
             return
         }
@@ -18,7 +21,7 @@ class BoardController {
     }
 
     fun list() {
-        for (board in boardRepository.boards) {
+        for (board in boardRepository.getBoards()) {
             println("${board.id} / ${board.name} / ${board.code}")
         }
     }
@@ -34,7 +37,7 @@ class BoardController {
             println("존재하지 않는 게시판 번호입니다.")
             return
         }
-        boardRepository.boards.remove(board)
+        File("data/board/$id.json").delete()
         println("${board.name}게시판 삭제 완료")
     }
 

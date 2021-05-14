@@ -13,8 +13,6 @@ fun main(){
 
     println("==프로그램 시작==")
 
-    boardRepository.makeTestBoard()
-
     while(true){
 
         loginedMember = memberRepository.getMemberById(1)
@@ -64,7 +62,7 @@ fun main(){
             "/board/delete" -> {
                 boardController.delete(rq)
             }
-            "/board/delete" -> {
+            "/board/modify" -> {
                 boardController.modify(rq)
             }
         }
