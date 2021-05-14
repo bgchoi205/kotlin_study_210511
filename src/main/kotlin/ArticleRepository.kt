@@ -62,23 +62,37 @@ class ArticleRepository{
         return article
     }
 
-    fun articlesFilter(keyword: String, page: Int, pageCount: Int): List<Article> {
+    fun articlesFilter(keyword: String, boardId : Int, page: Int, pageCount: Int): List<Article> {
         val filtered1Articles = articlesFilterByKey(getArticles(), keyword)
-        val filtered3Articles = articlesFilterByPage(filtered1Articles, page, pageCount)
+        val filtered2Articles = articlesFilterByBoard(filtered1Articles, boardId)
+        val filtered3Articles = articlesFilterByPage(filtered2Articles, page, pageCount)
         return filtered3Articles
     }
 
-    private fun articlesFilterByPage(filtered1Articles: List<Article>, page: Int, pageCount: Int): List<Article> {
-        val startIndex = filtered1Articles.lastIndex - ((page - 1) * pageCount)
+    private fun articlesFilterByPage(filtered2Articles: List<Article>, page: Int, pageCount: Int): List<Article> {
+        val startIndex = filtered2Articles.lastIndex - ((page - 1) * pageCount)
         var endIndex = startIndex - (pageCount - 1)
         if(endIndex < 0){
             endIndex = 0
         }
         val filtered3Articles = mutableListOf<Article>()
         for(i in startIndex downTo endIndex){
-            filtered3Articles.add(filtered1Articles[i])
+            filtered3Articles.add(filtered2Articles[i])
         }
         return filtered3Articles
+    }
+
+    private fun articlesFilterByBoard(filtered1Articles: List<Article>, boardId: Int): List<Article> {
+        if(boardId == 0){
+            return filtered1Articles
+        }
+        val filtered2Articles = mutableListOf<Article>()
+        for(article in filtered1Articles){
+            if(article.boardId == boardId){
+                filtered2Articles.add(article)
+            }
+        }
+        return filtered2Articles
     }
 
     private fun articlesFilterByKey(articles : List<Article>, keyword: String): List<Article> {
